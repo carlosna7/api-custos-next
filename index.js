@@ -59,6 +59,6 @@ app.delete('/:id', async (req, res) => {
 })
 
 app.listen(port, () => {
-    mongoose.connect(MONGODB)
+    mongoose.connect(process.env.MONGODB)
     console.log(`App running on port ${port}`)
 })
