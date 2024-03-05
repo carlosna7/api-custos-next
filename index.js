@@ -62,5 +62,3 @@ app.listen(port, () => {
     mongoose.connect(MONGODB)
     console.log(`App running on port ${port}`)
 })
-
-tesdte
