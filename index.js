@@ -1,14 +1,16 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const port = 5000
-const cors = require('cors');
-const app = express()
-
+const cors = require('cors')
 require("dotenv").config()
 
-app.use(cors());
+const app = express()
+const port = 5000
+
+// Middleware
+app.use(cors())
 app.use(express.json())
 
+mongoose.connect(process.env.MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const Projects = mongoose.model('Projects', { 
     id: String,
@@ -18,47 +20,57 @@ const Projects = mongoose.model('Projects', {
     // category: String, //array
     // costs: Number,
     // services: String //array
-
 })
 
 app.get('/', async (req, res) => {
-    const projects = await Projects.find()
-    res.send('Hello World!')
+    try {
+        const projects = await Projects.find()
+        res.json(projects)
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Internal Server Error')
+    }
 })
 
 app.post('/', async (req, res) => {
-    const project = new Projects({
-        id: req.body.id,
-        name: req.body.name,
-        budget: req.body.budget,
-        // costs: req.body.costs,
-    })
+    try {
+        const { id, name, budget } = req.body
+        const project = new Projects({ id, name, budget })
 
-    console.log("criado")
+        console.log("Project created")
 
-    await project.save()
-    res.send(project)
+        await project.save()
+        res.json(project)
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Internal Server Error')
+    }
 })
 
 app.put("/:id", async (req, res) => {
-    const project = await Projects.findByIdAndUpdate(req.params.id, {
-        id: req.body.id,
-        name: req.body.name,
-        budget: req.body.budget,
-        costs: req.body.costs,
-    }, {
-        new: true
-    })
+    try {
+        const { id, name, budget, costs } = req.body
+        const project = await Projects.findByIdAndUpdate(req.params.id, { id, name, budget, costs }, { new: true })
 
-    return res.send(project)
+        res.json(project)
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Internal Server Error')
+    }
 })
 
 app.delete('/:id', async (req, res) => {
-    const project = await Projects.findByIdAndDelete(req.params.id)
-    return res.send(project)
+    try {
+        const project = await Projects.findByIdAndDelete(req.params.id)
+        res.json(project)
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Internal Server Error')
+    }
 })
 
 app.listen(port, () => {
-    mongoose.connect(process.env.MONGODB)
     console.log(`App running on port ${port}`)
 })
