@@ -10,16 +10,28 @@ const port = 5000
 app.use(cors())
 app.use(express.json())
 
-mongoose.connect(process.env.MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB)
 
 const Projects = mongoose.model('Projects', { 
     id: String,
     name: String,
-    // history: String, //array
+    history: [
+        {
+            nome: String,
+            valor: Number
+        }
+    ],
     budget: Number,
-    // category: String, //array
-    // costs: Number,
-    // services: String //array
+    category: {},
+    costs: Number,
+    services: [
+        {
+            name: String,
+            costs: Number,
+            description: String,
+            id: String
+        }
+    ],
 })
 
 app.get('/', async (req, res) => {
@@ -35,8 +47,16 @@ app.get('/', async (req, res) => {
 
 app.post('/', async (req, res) => {
     try {
-        const { id, name, budget } = req.body
-        const project = new Projects({ id, name, budget })
+        const { id, name, history, budget, category, costs, services } = req.body
+        const project = new Projects({ 
+            id, 
+            name, 
+            history, 
+            budget, 
+            category, 
+            costs, 
+            services 
+        })
 
         console.log("Project created")
 
@@ -51,8 +71,18 @@ app.post('/', async (req, res) => {
 
 app.put("/:id", async (req, res) => {
     try {
-        const { id, name, budget, costs } = req.body
-        const project = await Projects.findByIdAndUpdate(req.params.id, { id, name, budget, costs }, { new: true })
+        const { id, name, history, budget, category, costs, services } = req.body
+        const project = await Projects.findByIdAndUpdate(req.params.id, { 
+            id, 
+            name, 
+            history, 
+            budget, 
+            category, 
+            costs, 
+            services 
+        }, { 
+            new: true 
+        })
 
         res.json(project)
     } catch (error) {
