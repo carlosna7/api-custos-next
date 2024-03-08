@@ -1,35 +1,4 @@
 {
-    "projects": [
-        {
-            "id": "ec38",
-            "name": "projeto - 01",
-            "history": [
-                {
-                    "nome": "projeto 1",
-                    "valor": "100"
-                },
-                {
-                    "nome": "projeto - 01",
-                    "valor": "1000"
-                }
-            ],
-            "budget": "1000",
-            "category": {
-                "id": "1",
-                "name": "Infra"
-            },
-            "costs": 100,
-            "services": [
-                {
-                    "name": "serviço 1",
-                    "costs": "100",
-                    "description": "descrioção do serviço",
-                    "id": "0975289a-d9bd-4007-b659-49b085068885"
-                }
-            ]
-        }
-    ],
-
     "categories": [
         {
             "id": "1",

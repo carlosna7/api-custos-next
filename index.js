@@ -12,7 +12,7 @@ app.use(express.json())
 
 mongoose.connect(process.env.MONGODB)
 
-const Projects = mongoose.model('Projects', { 
+const projectSchema = new mongoose.Schema({
     id: String,
     name: String,
     history: [
@@ -22,7 +22,10 @@ const Projects = mongoose.model('Projects', {
         }
     ],
     budget: Number,
-    category: {},
+    category: {
+        id: String,
+        name: String
+    },
     costs: Number,
     services: [
         {
@@ -34,6 +37,8 @@ const Projects = mongoose.model('Projects', {
     ],
 })
 
+const Projects = mongoose.model('Projects', projectSchema)
+
 app.get('/', async (req, res) => {
     try {
         const projects = await Projects.find()
@@ -44,6 +49,17 @@ app.get('/', async (req, res) => {
         res.status(500).send('Internal Server Error')
     }
 })
+
+// app.get('/project/:id', async (req, res) => {
+//     try {
+//         const projects = await Projects.find(req.params.id)
+//         res.json(projects)
+
+//     } catch (error) {
+//         console.error(error)
+//         res.status(500).send('Internal Server Error')
+//     }
+// })
 
 app.post('/', async (req, res) => {
     try {
@@ -58,7 +74,7 @@ app.post('/', async (req, res) => {
             services 
         })
 
-        console.log("Project created")
+        // console.log(project)
 
         await project.save()
         res.json(project)
