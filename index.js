@@ -39,9 +39,22 @@ const projectSchema = new mongoose.Schema({
 
 const Projects = mongoose.model('Projects', projectSchema)
 
-app.get('/', async (req, res) => {
+app.get('/project', async (req, res) => {
     try {
         const projects = await Projects.find()
+        res.json(projects)
+
+        // console.log(projects)
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Internal Server Error')
+    }
+})
+
+app.get('/project/:_id', async (req, res) => {
+    try {
+        const projects = await Projects.findById(req.params._id)
         res.json(projects)
 
     } catch (error) {
@@ -50,18 +63,7 @@ app.get('/', async (req, res) => {
     }
 })
 
-// app.get('/project/:id', async (req, res) => {
-//     try {
-//         const projects = await Projects.find(req.params.id)
-//         res.json(projects)
-
-//     } catch (error) {
-//         console.error(error)
-//         res.status(500).send('Internal Server Error')
-//     }
-// })
-
-app.post('/', async (req, res) => {
+app.post('/project', async (req, res) => {
     try {
         const { id, name, history, budget, category, costs, services } = req.body
         const project = new Projects({ 
@@ -85,11 +87,11 @@ app.post('/', async (req, res) => {
     }
 })
 
-app.put("/:id", async (req, res) => {
+app.patch("/project/:_id", async (req, res) => {
     try {
-        const { id, name, history, budget, category, costs, services } = req.body
-        const project = await Projects.findByIdAndUpdate(req.params.id, { 
-            id, 
+        const { _id, name, history, budget, category, costs, services } = req.body
+        const project = await Projects.findByIdAndUpdate(req.params._id, { 
+            _id, 
             name, 
             history, 
             budget, 
@@ -107,9 +109,9 @@ app.put("/:id", async (req, res) => {
     }
 })
 
-app.delete('/:id', async (req, res) => {
+app.delete('/project/:_id', async (req, res) => {
     try {
-        const project = await Projects.findByIdAndDelete(req.params.id)
+        const project = await Projects.findByIdAndDelete(req.params._id)
         res.json(project)
     } catch (error) {
         console.error(error)
